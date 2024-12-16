@@ -43,36 +43,13 @@ function taskDebounce(fn) {
 
 var supportsMicroTasks = isBrowser && window.Promise;
 
-/**
-* Create a debounced version of a method, that's asynchronously deferred
-* but called in the minimum time possible.
-*
-* @method
-* @memberof Popper.Utils
-* @argument {Function} fn
-* @returns {Function}
-*/
 var debounce = supportsMicroTasks ? microtaskDebounce : taskDebounce;
 
-/**
- * Check if the given variable is a function
- * @method
- * @memberof Popper.Utils
- * @argument {Any} functionToCheck - variable to check
- * @returns {Boolean} answer to: is a function?
- */
 function isFunction(functionToCheck) {
   var getType = {};
   return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 }
 
-/**
- * Get CSS computed property of the given element
- * @method
- * @memberof Popper.Utils
- * @argument {Eement} element
- * @argument {String} property
- */
 function getStyleComputedProperty(element, property) {
   if (element.nodeType !== 1) {
     return [];
@@ -82,13 +59,6 @@ function getStyleComputedProperty(element, property) {
   return property ? css[property] : css;
 }
 
-/**
- * Returns the parentNode or the host of the element
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element
- * @returns {Element} parent
- */
 function getParentNode(element) {
   if (element.nodeName === 'HTML') {
     return element;
@@ -96,13 +66,6 @@ function getParentNode(element) {
   return element.parentNode || element.host;
 }
 
-/**
- * Returns the scrolling parent of the given element
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element
- * @returns {Element} scroll parent
- */
 function getScrollParent(element) {
   // Return body, `getScroll` will take care to get the correct `scrollTop` from it
   if (!element) {
@@ -131,13 +94,6 @@ function getScrollParent(element) {
   return getScrollParent(getParentNode(element));
 }
 
-/**
- * Returns the offset parent of the given element
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element
- * @returns {Element} offset parent
- */
 function getOffsetParent(element) {
   // NOTE: 1 DOM access here
   var offsetParent = element && element.offsetParent;
@@ -168,13 +124,6 @@ function isOffsetContainer(element) {
   return nodeName === 'HTML' || getOffsetParent(element.firstElementChild) === element;
 }
 
-/**
- * Finds the root node (document, shadowDOM root) of the given element
- * @method
- * @memberof Popper.Utils
- * @argument {Element} node
- * @returns {Element} root node
- */
 function getRoot(node) {
   if (node.parentNode !== null) {
     return getRoot(node.parentNode);
@@ -183,21 +132,13 @@ function getRoot(node) {
   return node;
 }
 
-/**
- * Finds the offset parent common to the two provided nodes
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element1
- * @argument {Element} element2
- * @returns {Element} common offset parent
- */
+
 function findCommonOffsetParent(element1, element2) {
   // This check is needed to avoid errors in case one of the elements isn't defined for any reason
   if (!element1 || !element1.nodeType || !element2 || !element2.nodeType) {
     return document.documentElement;
   }
 
-  // Here we make sure to give as "start" the element that comes first in the DOM
   var order = element1.compareDocumentPosition(element2) & Node.DOCUMENT_POSITION_FOLLOWING;
   var start = order ? element1 : element2;
   var end = order ? element2 : element1;
@@ -218,7 +159,6 @@ function findCommonOffsetParent(element1, element2) {
     return getOffsetParent(commonAncestorContainer);
   }
 
-  // one of the nodes is inside shadowDOM, find which one
   var element1root = getRoot(element1);
   if (element1root.host) {
     return findCommonOffsetParent(element1root.host, element2);
@@ -227,14 +167,6 @@ function findCommonOffsetParent(element1, element2) {
   }
 }
 
-/**
- * Gets the scroll value of the given element in the given side (top and left)
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element
- * @argument {String} side `top` or `left`
- * @returns {number} amount of scrolled pixels
- */
 function getScroll(element) {
   var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'top';
 
@@ -263,16 +195,6 @@ function includeScroll(rect, element) {
   return rect;
 }
 
-/*
- * Helper to detect borders of a given element
- * @method
- * @memberof Popper.Utils
- * @param {CSSStyleDeclaration} styles
- * Result of `getStyleComputedProperty` on the given element
- * @param {String} axis - `x` or `y`
- * @return {number} borders - The borders size of the given axis
- */
-
 function getBordersSize(styles, axis) {
   var sideA = axis === 'x' ? 'Left' : 'Top';
   var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
@@ -280,12 +202,6 @@ function getBordersSize(styles, axis) {
   return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
 }
 
-/**
- * Tells if you are running Internet Explorer 10
- * @method
- * @memberof Popper.Utils
- * @returns {Boolean} isIE10
- */
 var isIE10 = undefined;
 
 var isIE10$1 = function () {
@@ -334,10 +250,6 @@ var createClass = function () {
   };
 }();
 
-
-
-
-
 var defineProperty = function (obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -367,13 +279,6 @@ var _extends = Object.assign || function (target) {
   return target;
 };
 
-/**
- * Given element offsets, generate an output similar to getBoundingClientRect
- * @method
- * @memberof Popper.Utils
- * @argument {Object} offsets
- * @returns {Object} ClientRect like output
- */
 function getClientRect(offsets) {
   return _extends({}, offsets, {
     right: offsets.left + offsets.width,
@@ -381,19 +286,9 @@ function getClientRect(offsets) {
   });
 }
 
-/**
- * Get bounding client rect of given element
- * @method
- * @memberof Popper.Utils
- * @param {HTMLElement} element
- * @return {Object} client rect
- */
 function getBoundingClientRect(element) {
   var rect = {};
 
-  // IE10 10 FIX: Please, don't ask, the element isn't
-  // considered in DOM in some circumstances...
-  // This isn't reproducible in IE10 compatibility mode of IE11
   if (isIE10$1()) {
     try {
       rect = element.getBoundingClientRect();
@@ -423,8 +318,6 @@ function getBoundingClientRect(element) {
   var horizScrollbar = element.offsetWidth - width;
   var vertScrollbar = element.offsetHeight - height;
 
-  // if an hypothetical scrollbar is detected, we must be sure it's not a `border`
-  // we make this check conditional for performance reasons
   if (horizScrollbar || vertScrollbar) {
     var styles = getStyleComputedProperty(element);
     horizScrollbar -= getBordersSize(styles, 'x');
@@ -457,10 +350,6 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   offsets.marginTop = 0;
   offsets.marginLeft = 0;
 
-  // Subtract margins of documentElement in case it's being used as parent
-  // we do this only on HTML because it's the only element that behaves
-  // differently when margins are applied to it. The margins are included in
-  // the box of the documentElement, in the other cases not.
   if (!isIE10 && isHTML) {
     var marginTop = parseFloat(styles.marginTop, 10);
     var marginLeft = parseFloat(styles.marginLeft, 10);
@@ -501,14 +390,6 @@ function getViewportOffsetRectRelativeToArtbitraryNode(element) {
   return getClientRect(offset);
 }
 
-/**
- * Check if the given element is fixed or is inside a fixed parent
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element
- * @argument {Element} customContainer
- * @returns {Boolean} answer to "isFixed?"
- */
 function isFixed(element) {
   var nodeName = element.nodeName;
   if (nodeName === 'BODY' || nodeName === 'HTML') {
@@ -519,17 +400,6 @@ function isFixed(element) {
   }
   return isFixed(getParentNode(element));
 }
-
-/**
- * Computed the boundaries limits and return them
- * @method
- * @memberof Popper.Utils
- * @param {HTMLElement} popper
- * @param {HTMLElement} reference
- * @param {number} padding
- * @param {HTMLElement} boundariesElement - Element used to define the boundaries
- * @returns {Object} Coordinates of the boundaries
- */
 function getBoundaries(popper, reference, padding, boundariesElement) {
   // NOTE: 1 DOM access here
   var boundaries = { top: 0, left: 0 };
@@ -586,15 +456,6 @@ function getArea(_ref) {
   return width * height;
 }
 
-/**
- * Utility used to transform the `auto` placement to the placement with more
- * available space.
- * @method
- * @memberof Popper.Utils
- * @argument {Object} data - The data object generated by update method
- * @argument {Object} options - Modifiers configuration and options
- * @returns {Object} The data object, properly modified
- */
 function computeAutoPlacement(placement, refRect, popper, reference, boundariesElement) {
   var padding = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
 
@@ -646,15 +507,7 @@ function computeAutoPlacement(placement, refRect, popper, reference, boundariesE
   return computedPlacement + (variation ? '-' + variation : '');
 }
 
-/**
- * Get offsets to the reference element
- * @method
- * @memberof Popper.Utils
- * @param {Object} state
- * @param {Element} popper - the popper element
- * @param {Element} reference - the reference element (the popper will be relative to this)
- * @returns {Object} An object containing the offsets which will be applied to the popper
- */
+
 function getReferenceOffsets(state, popper, reference) {
   var commonOffsetParent = findCommonOffsetParent(popper, reference);
   return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent);
@@ -692,16 +545,7 @@ function getOppositePlacement(placement) {
   });
 }
 
-/**
- * Get offsets to the popper
- * @method
- * @memberof Popper.Utils
- * @param {Object} position - CSS position the Popper will get applied
- * @param {HTMLElement} popper - the popper element
- * @param {Object} referenceOffsets - the reference offsets (the popper will be relative to this)
- * @param {String} placement - one of the valid placement options
- * @returns {Object} popperOffsets - An object containing the offsets which will be applied to the popper
- */
+
 function getPopperOffsets(popper, referenceOffsets, placement) {
   placement = placement.split('-')[0];
 
@@ -731,15 +575,7 @@ function getPopperOffsets(popper, referenceOffsets, placement) {
   return popperOffsets;
 }
 
-/**
- * Mimics the `find` method of Array
- * @method
- * @memberof Popper.Utils
- * @argument {Array} arr
- * @argument prop
- * @argument value
- * @returns index or -1
- */
+
 function find(arr, check) {
   // use native find if supported
   if (Array.prototype.find) {
@@ -774,16 +610,6 @@ function findIndex(arr, prop, value) {
   return arr.indexOf(match);
 }
 
-/**
- * Loop trough the list of modifiers and run them in order,
- * each of them will then edit the data object.
- * @method
- * @memberof Popper.Utils
- * @param {dataObject} data
- * @param {Array} modifiers
- * @param {String} ends - Optional modifier name used as stopper
- * @returns {dataObject}
- */
 function runModifiers(modifiers, data, ends) {
   var modifiersToRun = ends === undefined ? modifiers : modifiers.slice(0, findIndex(modifiers, 'name', ends));
 
@@ -794,9 +620,6 @@ function runModifiers(modifiers, data, ends) {
     }
     var fn = modifier['function'] || modifier.fn; // eslint-disable-line dot-notation
     if (modifier.enabled && isFunction(fn)) {
-      // Add properties to offsets to make them a complete clientRect object
-      // we do this before each modifier to make sure the previous one doesn't
-      // mess with these values
       data.offsets.popper = getClientRect(data.offsets.popper);
       data.offsets.reference = getClientRect(data.offsets.reference);
 
@@ -832,9 +655,7 @@ function update() {
   // compute reference element offsets
   data.offsets.reference = getReferenceOffsets(this.state, this.popper, this.reference);
 
-  // compute auto placement, store placement inside the data object,
-  // modifiers will be able to edit `placement` if needed
-  // and refer to originalPlacement to know the original value
+
   data.placement = computeAutoPlacement(this.options.placement, data.offsets.reference, this.popper, this.reference, this.options.modifiers.flip.boundariesElement, this.options.modifiers.flip.padding);
 
   // store the computed placement inside `originalPlacement`
@@ -857,12 +678,7 @@ function update() {
   }
 }
 
-/**
- * Helper used to know if the given modifier is enabled.
- * @method
- * @memberof Popper.Utils
- * @returns {Boolean}
- */
+
 function isModifierEnabled(modifiers, modifierName) {
   return modifiers.some(function (_ref) {
     var name = _ref.name,
@@ -995,12 +811,6 @@ function removeEventListeners(reference, state) {
   return state;
 }
 
-/**
- * It will remove resize/scroll events and won't recalculate popper position
- * when they are triggered. It also won't trigger onUpdate callback anymore,
- * @method
- * @memberof Popper
- */
 function disableEventListeners() {
   if (this.state.eventsEnabled) {
     cancelAnimationFrame(this.scheduleUpdate);
@@ -1019,14 +829,6 @@ function isNumeric(n) {
   return n !== '' && !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-/**
- * Set the style to the given popper
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element - Element to apply the style to
- * @argument {Object} styles
- * Object with a list of properties and values which will be applied to the element
- */
 function setStyles(element, styles) {
   Object.keys(styles).forEach(function (prop) {
     var unit = '';
@@ -1038,14 +840,6 @@ function setStyles(element, styles) {
   });
 }
 
-/**
- * Set the attributes to the given popper
- * @method
- * @memberof Popper.Utils
- * @argument {Element} element - Element to apply the attributes to
- * @argument {Object} styles
- * Object with a list of properties and values which will be applied to the element
- */
 function setAttributes(element, attributes) {
   Object.keys(attributes).forEach(function (prop) {
     var value = attributes[prop];
@@ -1057,24 +851,8 @@ function setAttributes(element, attributes) {
   });
 }
 
-/**
- * @function
- * @memberof Modifiers
- * @argument {Object} data - The data object generated by `update` method
- * @argument {Object} data.styles - List of style properties - values to apply to popper element
- * @argument {Object} data.attributes - List of attribute properties - values to apply to popper element
- * @argument {Object} options - Modifiers configuration and options
- * @returns {Object} The same data object
- */
 function applyStyle(data) {
-  // any property present in `data.styles` will be applied to the popper,
-  // in this way we can make the 3rd party modifiers add custom styles to it
-  // Be aware, modifiers could override the properties defined in the previous
-  // lines of this modifier!
   setStyles(data.instance.popper, data.styles);
-
-  // any property present in `data.attributes` will be applied to the popper,
-  // they will be set as HTML attributes of the element
   setAttributes(data.instance.popper, data.attributes);
 
   // if arrowElement is defined and arrowStyles has some properties
@@ -1085,23 +863,9 @@ function applyStyle(data) {
   return data;
 }
 
-/**
- * Set the x-placement attribute before everything else because it could be used
- * to add margins to the popper margins needs to be calculated to get the
- * correct popper offsets.
- * @method
- * @memberof Popper.modifiers
- * @param {HTMLElement} reference - The reference element used to position the popper
- * @param {HTMLElement} popper - The HTML element used as popper.
- * @param {Object} options - Popper.js options
- */
 function applyStyleOnLoad(reference, popper, options, modifierOptions, state) {
   // compute reference element offsets
   var referenceOffsets = getReferenceOffsets(state, popper, reference);
-
-  // compute auto placement, store placement inside the data object,
-  // modifiers will be able to edit `placement` if needed
-  // and refer to originalPlacement to know the original value
   var placement = computeAutoPlacement(options.placement, referenceOffsets, popper, reference, options.modifiers.flip.boundariesElement, options.modifiers.flip.padding);
 
   popper.setAttribute('x-placement', placement);
@@ -1124,8 +888,6 @@ function computeStyle(data, options) {
   var x = options.x,
       y = options.y;
   var popper = data.offsets.popper;
-
-  // Remove this legacy support in Popper.js v2
 
   var legacyGpuAccelerationOption = find(data.instance.modifiers, function (modifier) {
     return modifier.name === 'applyStyle';
@@ -1195,16 +957,6 @@ function computeStyle(data, options) {
   return data;
 }
 
-/**
- * Helper used to know if the given modifier depends from another one.<br />
- * It checks if the needed modifier is listed and enabled.
- * @method
- * @memberof Popper.Utils
- * @param {Array} modifiers - list of modifiers
- * @param {String} requestingName - name of requesting modifier
- * @param {String} requestedName - name of requested modifier
- * @returns {Boolean}
- */
 function isModifierRequired(modifiers, requestingName, requestedName) {
   var requesting = find(modifiers, function (_ref) {
     var name = _ref.name;
@@ -1270,11 +1022,6 @@ function arrow(data, options) {
   var altSide = isVertical ? 'left' : 'top';
   var opSide = isVertical ? 'bottom' : 'right';
   var arrowElementSize = getOuterSizes(arrowElement)[len];
-
-  //
-  // extends keepTogether behavior making sure the popper and its
-  // reference have enough pixels in conjuction
-  //
 
   // top/left side
   if (reference[opSide] - arrowElementSize < popper[side]) {
@@ -1872,12 +1619,6 @@ var modifiers = {
     element: '[x-arrow]'
   },
 
-  /**
-   * **NOTE:** this modifier will interrupt the current update cycle and will
-   * restart it if it detects the need to flip the placement.
-   * @memberof modifiers
-   * @inner
-   */
   flip: {
     /** @prop {number} order=600 - Index used to define the order of execution */
     order: 600,
@@ -1972,25 +1713,6 @@ var modifiers = {
     gpuAcceleration: undefined
   }
 };
-
-/**
- * The `dataObject` is an object containing all the informations used by Popper.js
- * this object get passed to modifiers and to the `onCreate` and `onUpdate` callbacks.
- * @name dataObject
- * @property {Object} data.instance The Popper.js instance
- * @property {String} data.placement Placement applied to popper
- * @property {String} data.originalPlacement Placement originally defined on init
- * @property {Boolean} data.flipped True if popper has been flipped by flip modifier
- * @property {Boolean} data.hide True if the reference element is out of boundaries, useful to know when to hide the popper.
- * @property {HTMLElement} data.arrowElement Node used as arrow by arrow modifier
- * @property {Object} data.styles Any CSS property defined here will be applied to the popper, it expects the JavaScript nomenclature (eg. `marginBottom`)
- * @property {Object} data.arrowStyles Any CSS property defined here will be applied to the popper arrow, it expects the JavaScript nomenclature (eg. `marginBottom`)
- * @property {Object} data.boundaries Offsets of the popper boundaries
- * @property {Object} data.offsets The measurements of popper, reference and arrow elements.
- * @property {Object} data.offsets.popper `top`, `left`, `width`, `height` values
- * @property {Object} data.offsets.reference `top`, `left`, `width`, `height` values
- * @property {Object} data.offsets.arrow] `top` and `left` offsets, only one of them will be different from 0
- */
 
 /**
  * @type {Object}
@@ -2134,12 +1856,6 @@ var Popper = function () {
       return disableEventListeners.call(this);
     }
 
-    /**
-     * Schedule an update, it will run on the next UI update available
-     * @method scheduleUpdate
-     * @memberof Popper
-     */
-
 
     /**
      * @static
@@ -2153,18 +1869,6 @@ var Popper = function () {
   }]);
   return Popper;
 }();
-
-/**
- * NB: This feature isn't supported in Internet Explorer 10
- * @name referenceObject
- * @property {Function} data.getBoundingClientRect
- * A function that returns a set of coordinates compatible with the native `getBoundingClientRect` method.
- * @property {number} data.clientWidth
- * An ES6 getter that will return the width of the virtual reference element.
- * @property {number} data.clientHeight
- * An ES6 getter that will return the height of the virtual reference element.
- */
-
 
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
